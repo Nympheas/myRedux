@@ -31,7 +31,7 @@
         //     }
         // }
 
-        const reducer = (state, action) => {
+        const counterReducer = (state, action) => {
             switch(action.type) {
                 case 'increment':
                     return state + 1
@@ -42,10 +42,14 @@
             }
         }
 
-        const store = createStore(reducer, 0, applyMiddleware(logger, thunk))
+        var rootReducer = combineReducers({
+            counter: counterReducer
+        })
+
+        const store = createStore(rootReducer, { counter: 100 }, applyMiddleware(logger, thunk))
 
         store.subscribe(function () {
-            document.getElementById('box').innerHTML = store.getState()
+            document.getElementById('box').innerHTML = store.getState().counter
         })
 
         var actions = bindActionsCreators({increment, decrement} , store.dispatch)

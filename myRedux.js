@@ -82,3 +82,21 @@ function bindActionsCreators(actionsCreators, dispatch) {
     }
     return boundActionsCreators
 }
+
+function combineReducers(reducers) {
+    var reducerKeys = Object.keys(reducers)
+    for (var i = 0; i < reducerKeys.length; i++) {
+        var key = reducerKeys[i]
+        if (typeof reducers[key] !== 'function') throw new Error('reducer必需为函数')
+    }
+    return function(state, action) {
+        var nextState = {}
+        for (var i = 0; i < reducerKeys.length; i++) {
+            var key = reducerKeys[i]
+            var reducer = reducers[key]
+            var previousState = state[key]
+            nextState[key] = reducer(previousState, action)
+        }
+        return nextState
+    }
+}
