@@ -48,17 +48,33 @@
             document.getElementById('box').innerHTML = store.getState()
         })
 
+        var actions = bindActionsCreators({increment, decrement} , store.dispatch)
+
+        function increment() {
+            return {
+                type: 'increment'
+            }
+        }
+
+        function decrement() {
+            return {
+                type: 'decrement'
+            }
+        }
+
         document.getElementById('increment').onclick = () => {
             // store.dispatch(function (dispatch) {
             //     setTimeout(function () {
             //         dispatch({ type: 'increment'})
             //     }, 1000)
             // })
-            store.dispatch({ type: 'increment' })
+            // store.dispatch({ type: 'increment' })
+            actions.increment()
         }
 
         document.getElementById('decrement').onclick = () => {
-            store.dispatch({ type: 'decrement' })
+            // store.dispatch({ type: 'decrement' })
+            actions.decrement()
         }
     </script>
 </body>

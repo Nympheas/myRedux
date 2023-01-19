@@ -70,3 +70,15 @@ function compose() {
         return dispatch
     }
 }
+
+function bindActionsCreators(actionsCreators, dispatch) {
+    var boundActionsCreators = {}
+    for (var key in actionsCreators) {
+        (function (key) {
+            boundActionsCreators[key] = function () {
+                dispatch(actionsCreators[key]())
+            }
+        })(key)
+    }
+    return boundActionsCreators
+}
