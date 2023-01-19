@@ -10,24 +10,26 @@
     <button id='increment'>+1</button>
     <span id='box'>0</span>
     <button id="decrement">-1</button>
+    <script src="./logger.js"></script>
+    <script src="./thunk.js"></script>
     <script src='./myRedux.js'></script>
     <script>
-        function enhancer(createStore) {
-            return function(reducer, preloadState) {
-                var store = createStore(reducer, preloadState)
-                var dispatch = store.dispatch
-                function _dispatch(action) {
-                    if (typeof action === 'function') {
-                        return action(dispatch)
-                    } 
-                    dispatch(dispatch)
-                }
-                return {
-                    ...store,
-                    dispatch: _dispatch
-                }
-            }
-        }
+        // function enhancer(createStore) {
+        //     return function(reducer, preloadState) {
+        //         var store = createStore(reducer, preloadState)
+        //         var dispatch = store.dispatch
+        //         function _dispatch(action) {
+        //             if (typeof action === 'function') {
+        //                 return action(dispatch)
+        //             } 
+        //             dispatch(dispatch)
+        //         }
+        //         return {
+        //             ...store,
+        //             dispatch: _dispatch
+        //         }
+        //     }
+        // }
 
         const reducer = (state, action) => {
             switch(action.type) {
@@ -40,18 +42,19 @@
             }
         }
 
-        const store = createStore(reducer, 0, enhancer)
+        const store = createStore(reducer, 0, applyMiddleware(logger, thunk))
 
         store.subscribe(function () {
             document.getElementById('box').innerHTML = store.getState()
         })
 
         document.getElementById('increment').onclick = () => {
-            store.dispatch(function (dispatch) {
-                setTimeout(function () {
-                    dispatch({ type: 'increment'})
-                }, 1000)
-            })
+            // store.dispatch(function (dispatch) {
+            //     setTimeout(function () {
+            //         dispatch({ type: 'increment'})
+            //     }, 1000)
+            // })
+            store.dispatch({ type: 'increment' })
         }
 
         document.getElementById('decrement').onclick = () => {

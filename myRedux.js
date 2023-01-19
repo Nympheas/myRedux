@@ -1,4 +1,4 @@
-function createStore(reducer, preloadState, enhancer) {
+function createStore(reducer, preloadState) {
     if (typeof reducer !== 'function') throw new Error('reducer不是函数')
     if (typeof enhancer !== 'undefined') {
         if (typeof enhancer !== 'function') {
@@ -41,4 +41,32 @@ function isPlainObj(obj) {
         proto = Object.getPrototypeOf(proto)
     }
     return Object.getPrototypeOf(obj) === proto
+}
+
+function applyMiddleware(...middlewares) {
+    return function(createStore) {
+        return function(reducer, preloadState) {
+            var store = createStore(reducer, preloadState)
+            var middlewareAPI = {
+                getState: store.getState,
+                dispatch: store.dispatch
+            }
+            var chain = middlewares.map(middleware => middleware(middlewareAPI))
+            var dispatch = compose(...chain)(store.dispatch)
+            return {
+                ...store,
+                dispatch
+            }
+        }
+    }
+}
+
+function compose() {
+    var funcs = [...arguments]
+    return function(dispatch) {
+        for(var i = funcs.length - 1; i >= 0; i--) {
+            dispatch = funcs[i](dispatch)
+        }
+        return dispatch
+    }
 }
