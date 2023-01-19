@@ -1,5 +1,11 @@
-function createStore(reducer, preloadState) {
-    if (typeof reducer === 'function') throw new Error('reducer不是函数')
+function createStore(reducer, preloadState, enhancer) {
+    if (typeof reducer !== 'function') throw new Error('reducer不是函数')
+    if (typeof enhancer !== 'undefined') {
+        if (typeof enhancer !== 'function') {
+            throw new Error('enhancer必需为函数')
+        }
+        return enhancer(createStore)(reducer, preloadState)
+    }
     var currentState = preloadState;
     var currentListener = []
 
